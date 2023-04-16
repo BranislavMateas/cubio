@@ -1,0 +1,6 @@
+- premeniť router na enum
+- ZJEDNOTIŤ BACKBUTTON
+- UROBIŤ RANDOM PRI TIMERI
+- spojazdniť solver - pridať loading načítavadlo...
+- spojazdniť timer
+- spojazdniť stats
