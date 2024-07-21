@@ -189,6 +189,7 @@ fabric.properties
 .idea/**/azureSettings.xml
 
 ### VisualStudioCode ###
+unity/cubio/.vsconfig
 unity/cubio/.vscode/*
 !unity/cubio/.vscode/settings.json
 !unity/cubio/.vscode/tasks.json
