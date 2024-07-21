@@ -276,6 +276,7 @@ unity/cubio/*.mdb.meta
 
 # Unity3D generated file on crash reports
 unity/cubio/sysinfo.txt
+unity/cubio/.vscode
 
 # Builds
 unity/cubio/*.apk
