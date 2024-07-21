@@ -45,7 +45,7 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
       ),
       floatingActionButton: StreamBuilder<bool>(
         stream: FlutterBluePlus.isScanning,
-        initialData: true, // Pretože začíname scan už na začiatku
+        initialData: true,
         builder: (c, snapshot) {
           if (snapshot.data!) {
             return FloatingActionButton(
@@ -89,8 +89,6 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
                 ),
               ),
               const SizedBox(height: 30),
-
-              // Naskenované zariadenia
               StreamBuilder<List<ScanResult>>(
                 stream: FlutterBluePlus.scanResults,
                 initialData: const [],
@@ -101,7 +99,6 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
                           element.device.platformName == SupportedDevices.Gi163347.name)
                       .toList();
 
-                  // Kontrola. či existujú nejaké naskenované zariadenia
                   return items.isEmpty
                       ? StreamBuilder<bool>(
                           stream: FlutterBluePlus.isScanning,
