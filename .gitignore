@@ -36,7 +36,7 @@ doc/api/
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 
-android/UnityLibrary/
+android/unityLibrary/
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
