@@ -4,4 +4,5 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final deviceNameProvider = StateProvider<String>((ref) => "");
 
 final isConnectedProvider = StateProvider<BluetoothConnectionState>(
-    (ref) => BluetoothConnectionState.disconnected);
+  (ref) => BluetoothConnectionState.disconnected,
+);
