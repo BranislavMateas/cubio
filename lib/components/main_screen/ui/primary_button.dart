@@ -12,12 +12,12 @@ class PrimaryButton extends ConsumerStatefulWidget {
   final bool checkForSolve;
 
   const PrimaryButton({
-    Key? key,
+    super.key,
     required this.route,
     required this.color,
     required this.text,
     required this.checkForSolve,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<PrimaryButton> createState() => _MenuButtonState();
@@ -29,16 +29,16 @@ class _MenuButtonState extends ConsumerState<PrimaryButton> {
     return ElevatedButton(
       style: ButtonStyle(
         animationDuration: const Duration(seconds: 10),
-        overlayColor: MaterialStateProperty.resolveWith(
+        overlayColor: WidgetStateProperty.resolveWith(
               (states) {
-            return states.contains(MaterialState.pressed)
+            return states.contains(WidgetState.pressed)
                 ? widget.color.withOpacity(0.25)
                 : null;
           },
         ),
         backgroundColor:
-        MaterialStateProperty.resolveWith((states) => Colors.transparent),
-        shape: MaterialStateProperty.resolveWith(
+        WidgetStateProperty.resolveWith((states) => Colors.transparent),
+        shape: WidgetStateProperty.resolveWith(
               (states) =>
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(50.0),

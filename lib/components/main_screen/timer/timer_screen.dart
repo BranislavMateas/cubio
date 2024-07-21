@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TimerScreen extends ConsumerStatefulWidget {
-  const TimerScreen({Key? key}) : super(key: key);
+  const TimerScreen({super.key});
 
   @override
   ConsumerState<TimerScreen> createState() => _TimerScreenState();

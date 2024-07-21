@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ConnectedDevice extends ConsumerStatefulWidget {
-  const ConnectedDevice({Key? key}) : super(key: key);
+  const ConnectedDevice({super.key});
 
   @override
   ConsumerState<ConnectedDevice> createState() => _ConnectedDeviceState();

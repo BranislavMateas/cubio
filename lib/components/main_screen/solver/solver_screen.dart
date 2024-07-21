@@ -8,7 +8,7 @@ import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:loggy/loggy.dart';
 
 class SolverScreen extends ConsumerStatefulWidget {
-  const SolverScreen({Key? key}) : super(key: key);
+  const SolverScreen({super.key});
 
   @override
   ConsumerState<SolverScreen> createState() => _SolverScreenState();

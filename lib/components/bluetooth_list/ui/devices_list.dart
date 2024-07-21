@@ -25,11 +25,11 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
   final Color chosen = cubeColorsList[Random().nextInt(cubeColorsList.length)];
 
   @override
-  void initState() {
-    super.initState();
-    ref
-        .read(bluetoothInstanceProvider)
-        .startScan(timeout: const Duration(seconds: bluetoothScanDur));
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    await FlutterBluePlus.startScan(
+      timeout: const Duration(seconds: bluetoothScanDur),
+    );
   }
 
   @override
@@ -44,13 +44,13 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
         ),
       ),
       floatingActionButton: StreamBuilder<bool>(
-        stream: ref.read(bluetoothInstanceProvider).isScanning,
+        stream: FlutterBluePlus.isScanning,
         initialData: true, // Pretože začíname scan už na začiatku
         builder: (c, snapshot) {
           if (snapshot.data!) {
             return FloatingActionButton(
               onPressed: () {
-                ref.read(bluetoothInstanceProvider).stopScan();
+                FlutterBluePlus.stopScan();
               },
               backgroundColor: Colors.red,
               child: const Icon(Icons.stop),
@@ -58,10 +58,10 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
           } else {
             return FloatingActionButton(
               backgroundColor: Colors.blue,
-              onPressed: () {
-                ref.read(bluetoothInstanceProvider).startScan(
-                      timeout: const Duration(seconds: bluetoothScanDur),
-                    );
+              onPressed: () async {
+                await FlutterBluePlus.startScan(
+                  timeout: const Duration(seconds: bluetoothScanDur),
+                );
               },
               child: const Icon(Icons.search),
             );
@@ -92,23 +92,21 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
 
               // Naskenované zariadenia
               StreamBuilder<List<ScanResult>>(
-                stream: ref.read(bluetoothInstanceProvider).scanResults,
+                stream: FlutterBluePlus.scanResults,
                 initialData: const [],
                 builder: (c, snapshot) {
                   var items = snapshot.data!
                       .where((element) =>
-                          element.device.name.isNotEmpty &&
-                          element.device.name == SupportedDevices.Gi163347.name)
+                          element.device.platformName.isNotEmpty &&
+                          element.device.platformName == SupportedDevices.Gi163347.name)
                       .toList();
 
                   // Kontrola. či existujú nejaké naskenované zariadenia
                   return items.isEmpty
                       ? StreamBuilder<bool>(
-                          stream:
-                              ref.read(bluetoothInstanceProvider).isScanning,
+                          stream: FlutterBluePlus.isScanning,
                           initialData: true,
                           builder: (c, snapshot) {
-                            // Ak zariadenie vyhľadáva
                             if (snapshot.data!) {
                               return const Expanded(
                                 child: Center(
@@ -140,9 +138,9 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
                               return ElevatedButton(
                                 style: ButtonStyle(
                                   backgroundColor:
-                                      MaterialStateProperty.resolveWith(
+                                      WidgetStateProperty.resolveWith(
                                           (states) => Colors.transparent),
-                                  shape: MaterialStateProperty.resolveWith(
+                                  shape: WidgetStateProperty.resolveWith(
                                     (states) => RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15.0),
                                       side: BorderSide(
@@ -161,7 +159,7 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          item.device.name,
+                                          item.device.platformName,
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 17,
@@ -184,7 +182,7 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
 
                                   await item.device.connect(autoConnect: false);
 
-                                  item.device.state.listen((s) {
+                                  item.device.connectionState.listen((s) {
                                     ref
                                         .read(isConnectedProvider.notifier)
                                         .state = s;
@@ -204,8 +202,8 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
                                           await c.setNotifyValue(true);
                                           ref
                                               .read(deviceNameProvider.notifier)
-                                              .state = item.device.name;
-                                          c.value.listen((value) async {
+                                              .state = item.device.platformName;
+                                          c.lastValueStream.listen((value) async {
                                             loggy
                                                 .debug("Data Received: $value");
                                             ref
@@ -221,7 +219,7 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
                                     isConnecting = false;
                                   });
 
-                                  if (!mounted) return;
+                                  if (mounted) return;
                                   Navigator.pushNamed(context, '/menu');
                                 },
                               );

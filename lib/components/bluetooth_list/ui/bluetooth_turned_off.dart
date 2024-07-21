@@ -2,7 +2,7 @@ import 'package:cubio/page/constants.dart';
 import 'package:flutter/material.dart';
 
 class BluetoothTurnedOff extends StatelessWidget {
-  const BluetoothTurnedOff({Key? key}) : super(key: key);
+  const BluetoothTurnedOff({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +14,12 @@ class BluetoothTurnedOff extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ),
-      body: SafeArea(
+      body: const SafeArea(
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Center(
                 child: Icon(
                   Icons.bluetooth_disabled,

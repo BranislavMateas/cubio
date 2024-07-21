@@ -60,13 +60,13 @@ class _LineChartGraphState extends State<LineChartGraph> {
         horizontalInterval: 1,
         verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
-          return FlLine(
+          return const FlLine(
             color: Colors.white10,
             strokeWidth: 1,
           );
         },
         getDrawingVerticalLine: (value) {
-          return FlLine(
+          return const FlLine(
             color: Colors.white10,
             strokeWidth: 1,
           );
@@ -74,13 +74,13 @@ class _LineChartGraphState extends State<LineChartGraph> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: AxisTitles(
+        rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: AxisTitles(
+        topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        bottomTitles: AxisTitles(
+        bottomTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
         leftTitles: AxisTitles(
@@ -109,7 +109,7 @@ class _LineChartGraphState extends State<LineChartGraph> {
           ),
           barWidth: 5,
           isStrokeCapRound: true,
-          dotData: FlDotData(
+          dotData: const FlDotData(
             show: false,
           ),
           belowBarData: BarAreaData(

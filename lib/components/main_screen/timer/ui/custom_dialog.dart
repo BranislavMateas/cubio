@@ -82,16 +82,16 @@ class _CustomDialogBoxState extends ConsumerState<CustomDialogBox> {
                       child: ElevatedButton(
                           style: ButtonStyle(
                             animationDuration: const Duration(seconds: 10),
-                            overlayColor: MaterialStateProperty.resolveWith(
+                            overlayColor: WidgetStateProperty.resolveWith(
                               (states) {
-                                return states.contains(MaterialState.pressed)
+                                return states.contains(WidgetState.pressed)
                                     ? Colors.blue.withOpacity(0.25)
                                     : null;
                               },
                             ),
-                            backgroundColor: MaterialStateProperty.resolveWith(
+                            backgroundColor: WidgetStateProperty.resolveWith(
                                 (states) => Colors.transparent),
-                            shape: MaterialStateProperty.resolveWith(
+                            shape: WidgetStateProperty.resolveWith(
                               (states) => RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50.0),
                                 side: const BorderSide(

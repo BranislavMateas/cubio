@@ -12,7 +12,7 @@ import 'package:flutter_unity_widget/flutter_unity_widget.dart';
 import 'package:loggy/loggy.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  const MainScreen({super.key});
 
   static List<Color> menuColors = [];
 
@@ -39,15 +39,12 @@ class _MainScreenState extends ConsumerState<MainScreen> with UiLoggy {
     MainScreen.menuColors = generateUniqueColors();
 
     var isConnected = ref.watch(isConnectedProvider);
-    if (isConnected != BluetoothDeviceState.connected) {
+    if (isConnected != BluetoothConnectionState.connected) {
       Navigator.pushNamed(context, '/');
     }
 
-    return WillPopScope(
-      onWillPop: () async {
-        // Vráť false, aby sa užívateľ nemohol vrátiť späť
-        return false;
-      },
+    return PopScope(
+      canPop: false,
       child: Stack(
         children: [
           UnityWidget(

@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 
 class StatsScreen extends StatefulWidget {
-  const StatsScreen({Key? key}) : super(key: key);
+  const StatsScreen({super.key});
 
   @override
   State<StatsScreen> createState() => _StatsScreenState();
@@ -21,15 +21,12 @@ class _StatsScreenState extends State<StatsScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      // Nacitaj pohyby
       List<String> savedMovesRaw = prefs.getStringList("moveList") ?? [];
       savedMoves = savedMovesRaw.map(double.parse).toList();
 
-      // Nacitaj TPS
       List<String> savedTpsRaw = prefs.getStringList("tpsList") ?? [];
       savedTps = savedTpsRaw.map(double.parse).toList();
 
-      // Nacitaj čas
       List<String> savedTimeRaw = prefs.getStringList("timeList") ?? [];
       savedTime = savedTimeRaw.map(double.parse).toList();
     });

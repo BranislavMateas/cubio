@@ -10,28 +10,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loggy/loggy.dart';
 
 class BluetoothList extends ConsumerWidget with UiLoggy {
-  const BluetoothList({Key? key}) : super(key: key);
+  const BluetoothList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return StreamBuilder<BluetoothState>(
-      stream: ref.read(bluetoothInstanceProvider).state,
-      initialData: BluetoothState.unknown,
+    return StreamBuilder<BluetoothAdapterState>(
+      stream: FlutterBluePlus.adapterState,
+      initialData: BluetoothAdapterState.unknown,
       builder: (c, snapshot) {
         final state = snapshot.data;
         loggy.debug("Bluetooth State: $state");
 
-        if (state != BluetoothState.unknown) {
+        if (state != BluetoothAdapterState.unknown) {
           FlutterNativeSplash.remove();
 
-          if (state == BluetoothState.on) {
+          if (state == BluetoothAdapterState.on) {
             if (ref.read(isConnectedProvider) ==
-                BluetoothDeviceState.connected) {
+                BluetoothConnectionState.connected) {
               return const MainScreen();
             } else {
               return const DevicesList();
             }
-          } else if (state == BluetoothState.off) {
+          } else if (state == BluetoothAdapterState.off) {
             return const BluetoothTurnedOff();
           } else {
             return ErrorPage(errorMsg: state.toString());

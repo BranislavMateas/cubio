@@ -12,7 +12,7 @@ import 'package:loggy/loggy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TimerPlayground extends ConsumerStatefulWidget {
-  const TimerPlayground({Key? key}) : super(key: key);
+  const TimerPlayground({super.key});
 
   @override
   ConsumerState<TimerPlayground> createState() => _TimerPlaygroundState();
