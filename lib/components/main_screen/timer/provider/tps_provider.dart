@@ -3,8 +3,5 @@ import 'package:cubio/components/main_screen/timer/provider/stopwatch_provider.d
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final tpsProvider = StateProvider<double>((ref) {
-  return ref
-      .read(stopwatchProvider.notifier)
-      .totalSeconds /
-      ref.watch(movesProvider);
+  return ref.read(stopwatchProvider.notifier).totalSeconds / ref.watch(movesProvider);
 });

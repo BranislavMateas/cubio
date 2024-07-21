@@ -26,13 +26,11 @@ class StopwatchNotifier extends StateNotifier<String> with UiLoggy {
     isRunning = true;
     _stopwatch.start();
     timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
-      // Vypočítaj prejdený čas v minutách, sekundách a milisekundách
       _minutes = _stopwatch.elapsed.inMinutes;
       _seconds = _stopwatch.elapsed.inSeconds % 60;
       _milliseconds = _stopwatch.elapsed.inMilliseconds % 1000;
 
-      state =
-          '${_minutes.toString().padLeft(2, '0')}:${_seconds.toString().padLeft(2, '0')}:${_milliseconds.toString().padLeft(3, '0')}';
+      state = '${_minutes.toString().padLeft(2, '0')}:${_seconds.toString().padLeft(2, '0')}:${_milliseconds.toString().padLeft(3, '0')}';
     });
   }
 
@@ -52,8 +50,7 @@ class StopwatchNotifier extends StateNotifier<String> with UiLoggy {
     _seconds = 0;
     _milliseconds = 0;
 
-    state =
-        '${0.toString().padLeft(2, '0')}:${0.toString().padLeft(2, '0')}:${0.toString().padLeft(3, '0')}';
+    state = '${0.toString().padLeft(2, '0')}:${0.toString().padLeft(2, '0')}:${0.toString().padLeft(3, '0')}';
   }
 
   double get totalSeconds {

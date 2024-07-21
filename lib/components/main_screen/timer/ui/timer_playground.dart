@@ -18,60 +18,56 @@ class TimerPlayground extends ConsumerStatefulWidget {
   ConsumerState<TimerPlayground> createState() => _TimerPlaygroundState();
 }
 
-class _TimerPlaygroundState extends ConsumerState<TimerPlayground>
-    with UiLoggy {
+class _TimerPlaygroundState extends ConsumerState<TimerPlayground> with UiLoggy {
   int lastMovesNum = 0;
   double lastTPSNum = 0;
-
   bool hasStarted = false;
   bool shouldPop = true;
 
-  void setResults() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> setResults() async {
+    final prefs = await SharedPreferences.getInstance();
 
-    // Ukladanie pohybov
-    List<String> savedMoves = prefs.getStringList("moveList") ?? [];
+    final savedMoves = prefs.getStringList("moveList") ?? [];
     savedMoves.add(ref.read(movesProvider).toString());
-    prefs.setStringList("moveList", savedMoves);
+    await prefs.setStringList("moveList", savedMoves);
 
-    // Ukladanie TPS
-    List<String> savedTps = prefs.getStringList("tpsList") ?? [];
+    final savedTps = prefs.getStringList("tpsList") ?? [];
     savedTps.add(ref.read(tpsProvider).toStringAsFixed(2));
-    prefs.setStringList("tpsList", savedTps);
+    await prefs.setStringList("tpsList", savedTps);
 
-    // Ukladanie času
-    List<String> savedTime = prefs.getStringList("timeList") ?? [];
-    savedTime.add(
-        ref.read(stopwatchProvider.notifier).totalSeconds.toStringAsFixed(2));
-    prefs.setStringList("timeList", savedTime);
+    final savedTime = prefs.getStringList("timeList") ?? [];
+    savedTime.add(ref.read(stopwatchProvider.notifier).totalSeconds.toStringAsFixed(2));
+    await prefs.setStringList("timeList", savedTime);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (ref.watch(movesProvider) > 0 && !hasStarted) {
+    final moves = ref.watch(movesProvider);
+    if (moves > 0 && !hasStarted) {
       ref.read(stopwatchProvider.notifier).startStopwatch();
       hasStarted = true;
     }
 
-    var isSolved = ref.watch(cubeDataProvider.notifier).isSolved;
+    final isSolved = ref.watch(cubeDataProvider.notifier).isSolved;
     if (isSolved && shouldPop) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref.read(stopwatchProvider.notifier).stopStopwatch();
+
         showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return const CustomDialogBox(
-                title: "CONGRATS!",
-                descriptions:
-                    "YOU HAVE NOW SOLVED THE CUBE! CHECK YOUR RESULTS, THEY WILL ALSO APPEAR IN A STATS WINDOW NOW!",
-                text: "RESULTS",
-              );
-            });
+          context: context,
+          builder: (context) => const CustomDialogBox(
+            title: "CONGRATS!",
+            descriptions: "YOU HAVE NOW SOLVED THE CUBE! CHECK YOUR RESULTS, THEY WILL ALSO APPEAR IN A STATS WINDOW NOW!",
+            text: "RESULTS",
+          ),
+        );
+
         setState(() {
           lastMovesNum = ref.read(movesProvider);
           lastTPSNum = ref.read(tpsProvider);
           shouldPop = false;
         });
+
         setResults();
       });
     }
@@ -95,11 +91,8 @@ class _TimerPlaygroundState extends ConsumerState<TimerPlayground>
                   onUnityCreated: (controller) {},
                   onUnityMessage: (message) {
                     loggy.debug(message);
-                    List<String> parsedSolution = message.split(" ");
-                    ref.read(solveSequenceProvider.notifier).state =
-                        parsedSolution
-                            .where((element) => element != "")
-                            .toList();
+                    final parsedSolution = message.split(" ");
+                    ref.read(solveSequenceProvider.notifier).state = parsedSolution.where((element) => element.isNotEmpty).toList();
                   },
                 ),
               ),
@@ -108,8 +101,7 @@ class _TimerPlaygroundState extends ConsumerState<TimerPlayground>
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: 24.0, left: 24, right: 24),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
                     child: Center(
                       child: Text(
                         ref.watch(stopwatchProvider),
@@ -118,20 +110,16 @@ class _TimerPlaygroundState extends ConsumerState<TimerPlayground>
                     ),
                   ),
                   Row(
-                    mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
                         children: [
                           Text(
                             "MOVES",
-                            style: regularTextStyle.copyWith(
-                                color: appBarTitleColor),
+                            style: regularTextStyle.copyWith(color: appBarTitleColor),
                           ),
                           Text(
-                            !shouldPop
-                                ? lastMovesNum.toString()
-                                : ref.watch(movesProvider).toString(),
+                            !shouldPop ? lastMovesNum.toString() : moves.toString(),
                             style: regularTextStyle,
                           ),
                         ],
@@ -140,22 +128,20 @@ class _TimerPlaygroundState extends ConsumerState<TimerPlayground>
                         children: [
                           Text(
                             "TPS",
-                            style: regularTextStyle.copyWith(
-                                color: appBarTitleColor),
+                            style: regularTextStyle.copyWith(color: appBarTitleColor),
                           ),
                           Text(
                             !shouldPop
                                 ? lastTPSNum.toStringAsFixed(2)
-                                : ref.watch(tpsProvider).toStringAsFixed(2) ==
-                                        "NaN"
-                                    ? "-.--"
-                                    : ref.watch(tpsProvider).toStringAsFixed(2),
+                                : ref.watch(tpsProvider).toStringAsFixed(2) == "NaN"
+                                  ? "-.--"
+                                  : ref.watch(tpsProvider).toStringAsFixed(2),
                             style: regularTextStyle,
-                          )
+                          ),
                         ],
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

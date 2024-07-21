@@ -17,25 +17,70 @@ class _StatsScreenState extends State<StatsScreen> {
   List<double> savedTps = [];
   List<double> savedTime = [];
 
-  Future<void> loadData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    setState(() {
-      List<String> savedMovesRaw = prefs.getStringList("moveList") ?? [];
-      savedMoves = savedMovesRaw.map(double.parse).toList();
-
-      List<String> savedTpsRaw = prefs.getStringList("tpsList") ?? [];
-      savedTps = savedTpsRaw.map(double.parse).toList();
-
-      List<String> savedTimeRaw = prefs.getStringList("timeList") ?? [];
-      savedTime = savedTimeRaw.map(double.parse).toList();
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     loadData();
+  }
+
+  Future<void> loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      savedMoves = _loadListFromPrefs(prefs, 'moveList');
+      savedTps = _loadListFromPrefs(prefs, 'tpsList');
+      savedTime = _loadListFromPrefs(prefs, 'timeList');
+    });
+  }
+
+  List<double> _loadListFromPrefs(SharedPreferences prefs, String key) {
+    List<String> rawList = prefs.getStringList(key) ?? [];
+    return rawList.map(double.parse).toList();
+  }
+
+  Widget _buildChartSection(String title, List<double> data, List<Color> gradientColors, String unit) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(title, style: regularTextStyle),
+          Expanded(
+            child: LineChartGraph(
+              spots: _generateFlSpots(data),
+              gradientColors: gradientColors,
+              minX: 0,
+              maxX: data.isEmpty ? 0 : data.length - 1,
+              minY: 0,
+              maxY: _calculateMaxY(data),
+              leftAxis: (double value, TitleMeta title) => _buildLeftAxisLabel(value, data),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<FlSpot> _generateFlSpots(List<double> data) {
+    return data.asMap().entries.map((entry) {
+      return FlSpot(entry.key.toDouble(), entry.value);
+    }).toList();
+  }
+
+  double _calculateMaxY(List<double> data) {
+    return data.isEmpty ? 0 : (data.reduce(max) * 1.5).round().toDouble();
+  }
+
+  Widget _buildLeftAxisLabel(double value, List<double> data) {
+    int valInt = value.toInt();
+    String text;
+    if (valInt == 0) {
+      text = '0';
+    } else if (valInt == (data.reduce(max) * 1.5).toInt()) {
+      text = (data.reduce(max) * 1.5).toInt().toString();
+    } else {
+      return Container();
+    }
+
+    return Center(child: Text(text, style: regularTextStyle.copyWith(fontSize: 14), textAlign: TextAlign.left));
   }
 
   @override
@@ -44,20 +89,14 @@ class _StatsScreenState extends State<StatsScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: const Text(
-          'STATS',
-          textAlign: TextAlign.center,
-        ),
+        title: const Text('STATS', textAlign: TextAlign.center),
         leading: Padding(
           padding: const EdgeInsets.all(4),
           child: IconButton(
             iconSize: 28,
             splashRadius: 28,
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            ),
-            onPressed: () async {
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
               if (!mounted) return;
               Navigator.pop(context);
             },
@@ -73,164 +112,11 @@ class _StatsScreenState extends State<StatsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "MOVES",
-                        style: regularTextStyle,
-                      ),
-                      Expanded(
-                        child: LineChartGraph(
-                          spots:
-                              savedMoves.asMap().entries.map((MapEntry entry) {
-                            return FlSpot(double.parse(entry.key.toString()),
-                                entry.value);
-                          }).toList(),
-                          gradientColors: const [
-                            Colors.blue,
-                            Colors.blueAccent,
-                          ],
-                          minX: 0,
-                          maxX: savedMoves.isEmpty ? 0 : savedMoves.length - 1,
-                          minY: 0,
-                          maxY: savedMoves.isEmpty
-                              ? 0
-                              : (savedMoves.reduce(max) * 1.5)
-                                  .round()
-                                  .toDouble(),
-                          leftAxis: (double value, TitleMeta title) {
-                            String text;
-
-                            int valInt = value.toInt();
-                            if (valInt == 0) {
-                              text = "0";
-                            } else if (valInt ==
-                                (savedMoves.reduce(max) * 1.5).toInt()) {
-                              text = (savedMoves.reduce(max) * 1.5)
-                                  .toInt()
-                                  .toString();
-                            } else {
-                              return Container();
-                            }
-
-                            return Center(
-                              child: Text(
-                                text,
-                                style: regularTextStyle.copyWith(fontSize: 14),
-                                textAlign: TextAlign.left,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                _buildChartSection('MOVES', savedMoves, [Colors.blue, Colors.blueAccent], ''),
                 const SizedBox(height: 24),
-                Expanded(
-                  child: Column(
-                    children: [
-                      const Text(
-                        "TPS (TURNS-PER-SECOND)",
-                        style: regularTextStyle,
-                      ),
-                      Expanded(
-                        child: LineChartGraph(
-                          spots: savedTps.asMap().entries.map((MapEntry entry) {
-                            return FlSpot(double.parse(entry.key.toString()),
-                                entry.value);
-                          }).toList(),
-                          gradientColors: const [
-                            Colors.purple,
-                            Colors.purpleAccent,
-                          ],
-                          minX: 0,
-                          maxX: savedTps.isEmpty ? 0 : savedTps.length - 1,
-                          minY: 0,
-                          maxY: savedTps.isEmpty
-                              ? 0
-                              : (savedTps.reduce(max) * 1.5).round().toDouble(),
-                          leftAxis: (double value, TitleMeta title) {
-                            String text;
-
-                            int valInt = value.toInt();
-                            if (valInt == 0) {
-                              text = "0";
-                            } else if (valInt ==
-                                (savedTps.reduce(max) * 1.5).toInt()) {
-                              text = (savedTps.reduce(max) * 1.5)
-                                  .toInt()
-                                  .toString();
-                            } else {
-                              return Container();
-                            }
-
-                            return Center(
-                                child: Text(text,
-                                    style:
-                                        regularTextStyle.copyWith(fontSize: 14),
-                                    textAlign: TextAlign.left));
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                _buildChartSection('TPS (TURNS-PER-SECOND)', savedTps, [Colors.purple, Colors.purpleAccent], ''),
                 const SizedBox(height: 24),
-                Expanded(
-                  child: Column(
-                    children: [
-                      const Text(
-                        "TIME (SECONDS)",
-                        style: regularTextStyle,
-                      ),
-                      Expanded(
-                        child: LineChartGraph(
-                          spots:
-                              savedTime.asMap().entries.map((MapEntry entry) {
-                            return FlSpot(double.parse(entry.key.toString()),
-                                entry.value);
-                          }).toList(),
-                          gradientColors: const [
-                            Colors.green,
-                            Colors.greenAccent,
-                          ],
-                          minX: 0,
-                          maxX: savedTime.isEmpty ? 0 : savedTime.length - 1,
-                          minY: 0,
-                          maxY: savedTime.isEmpty
-                              ? 0
-                              : (savedTime.reduce(max) * 1.5)
-                                  .round()
-                                  .toDouble(),
-                          leftAxis: (double value, TitleMeta title) {
-                            String text;
-
-                            int valInt = value.toInt();
-                            if (valInt == 0) {
-                              text = "0";
-                            } else if (valInt ==
-                                (savedTime.reduce(max) * 1.5).toInt()) {
-                              text = (savedTime.reduce(max) * 1.5)
-                                  .toInt()
-                                  .toString();
-                            } else {
-                              return Container();
-                            }
-
-                            return Center(
-                                child: Text("$text:00",
-                                    style:
-                                        regularTextStyle.copyWith(fontSize: 14),
-                                    textAlign: TextAlign.left));
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                _buildChartSection('TIME (SECONDS)', savedTime, [Colors.green, Colors.greenAccent], ''),
               ],
             ),
           ),

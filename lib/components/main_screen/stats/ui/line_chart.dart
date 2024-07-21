@@ -115,9 +115,9 @@ class _LineChartGraphState extends State<LineChartGraph> {
           belowBarData: BarAreaData(
             show: true,
             gradient: LinearGradient(
-              colors: widget.gradientColors
-                  .map((color) => color.withOpacity(0.3))
-                  .toList(),
+              colors: widget.gradientColors.map((color) {
+                return color.withOpacity(0.3);
+              }).toList(),
             ),
           ),
         ),

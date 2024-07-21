@@ -34,20 +34,24 @@ class _CustomDialogBoxState extends ConsumerState<CustomDialogBox> {
       children: <Widget>[
         Container(
           padding: const EdgeInsets.only(
-              left: 20, top: 45 + 20, right: 20, bottom: 20),
+            left: 20,
+            top: 65,
+            right: 20,
+            bottom: 20,
+          ),
           margin: const EdgeInsets.only(top: 42.5),
           decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: primaryAppColor,
-              border: Border.all(
-                color: Colors.green,
-                width: 2.5,
-              ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: const [
-                BoxShadow(
-                    color: Colors.black, offset: Offset(0, 10), blurRadius: 10),
-              ]),
+            shape: BoxShape.rectangle,
+            color: primaryAppColor,
+            border: Border.all(
+              color: Colors.green,
+              width: 2.5,
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: const [
+              BoxShadow(color: Colors.black, offset: Offset(0, 10), blurRadius: 10),
+            ],
+          ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -56,9 +60,10 @@ class _CustomDialogBoxState extends ConsumerState<CustomDialogBox> {
                 Text(
                   widget.title,
                   style: const TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white),
+                    fontSize: 30,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
@@ -66,9 +71,10 @@ class _CustomDialogBoxState extends ConsumerState<CustomDialogBox> {
                 Text(
                   widget.descriptions,
                   style: const TextStyle(
-                      fontSize: 15,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 15,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(
@@ -82,24 +88,21 @@ class _CustomDialogBoxState extends ConsumerState<CustomDialogBox> {
                       child: ElevatedButton(
                           style: ButtonStyle(
                             animationDuration: const Duration(seconds: 10),
-                            overlayColor: WidgetStateProperty.resolveWith(
-                              (states) {
-                                return states.contains(WidgetState.pressed)
-                                    ? Colors.blue.withOpacity(0.25)
-                                    : null;
-                              },
-                            ),
-                            backgroundColor: WidgetStateProperty.resolveWith(
-                                (states) => Colors.transparent),
-                            shape: WidgetStateProperty.resolveWith(
-                              (states) => RoundedRectangleBorder(
+                            overlayColor: WidgetStateProperty.resolveWith((states) {
+                              return states.contains(WidgetState.pressed)
+                                  ? Colors.blue.withOpacity(0.25)
+                                  : null;
+                            }),
+                            backgroundColor: WidgetStateProperty.resolveWith((states) => Colors.transparent),
+                            shape: WidgetStateProperty.resolveWith((states) {
+                              return RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50.0),
                                 side: const BorderSide(
                                   color: Colors.blue,
                                   width: 2.5,
                                 ),
-                              ),
-                            ),
+                              );
+                            }),
                           ),
                           onPressed: () {
                             Navigator.of(context, rootNavigator: true).pop();
@@ -110,7 +113,8 @@ class _CustomDialogBoxState extends ConsumerState<CustomDialogBox> {
                               widget.text,
                               style: const TextStyle(fontSize: 18),
                             ),
-                          )),
+                          ),
+                      ),
                     )
                   ],
                 )
@@ -125,8 +129,7 @@ class _CustomDialogBoxState extends ConsumerState<CustomDialogBox> {
             children: [
               Positioned.fill(
                 child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 85, vertical: 10),
+                  margin: const EdgeInsets.symmetric(horizontal: 85, vertical: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.white,
