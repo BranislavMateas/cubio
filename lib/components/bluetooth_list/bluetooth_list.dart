@@ -19,29 +19,23 @@ class BluetoothList extends ConsumerWidget with UiLoggy {
       initialData: BluetoothAdapterState.unknown,
       builder: (c, snapshot) {
         final state = snapshot.data;
-        loggy.debug("Bluetooth State: $state");
 
         if (state != BluetoothAdapterState.unknown) {
           FlutterNativeSplash.remove();
 
           if (state == BluetoothAdapterState.on) {
-            if (ref.read(isConnectedProvider) ==
-                BluetoothConnectionState.connected) {
-              return const MainScreen();
-            } else {
-              return const DevicesList();
-            }
-          } else if (state == BluetoothAdapterState.off) {
-            return const BluetoothTurnedOff();
-          } else {
-            return ErrorPage(errorMsg: state.toString());
+            return ref.read(isConnectedProvider) == BluetoothConnectionState.connected
+                ? const MainScreen()
+                : const DevicesList();
           }
+
+          if (state == BluetoothAdapterState.off) {
+            return const BluetoothTurnedOff();
+          }
+
+          return ErrorPage(errorMsg: state.toString());
         }
 
-        /*
-          NOTE: I am returning container, because if the bluetooth state
-          is still unknown (the initial), we will still see splash screen.
-        */
         return Container();
       },
     );
