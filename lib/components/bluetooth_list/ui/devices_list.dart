@@ -13,7 +13,7 @@ const serviceUUID = '0000aadb-0000-1000-8000-00805f9b34fb';
 const characteristicUUID = '0000aadc-0000-1000-8000-00805f9b34fb';
 
 class DevicesList extends ConsumerStatefulWidget {
-  const DevicesList({Key? key}) : super(key: key);
+  const DevicesList({super.key});
 
   @override
   ConsumerState<DevicesList> createState() => _DevicesListState();
