@@ -3,7 +3,6 @@ import 'dart:typed_data';
 class CommunicationDecoder {
   CommunicationDecoder();
 
-  // Hlavné funkcie
   List<int> bytesToCubeOutputData(Uint8List mixData) {
     var array = Uint8List(20);
     var array2 = [
@@ -231,7 +230,6 @@ class CommunicationDecoder {
     return array;
   }
 
-  // Pomocné funkcie
   int _converseAngleSetXFirst(Uint8List cube, angle, angleFace, f1, f2, f3) {
     int num = 0;
     if (angle == 1) {
