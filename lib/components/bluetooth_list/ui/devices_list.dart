@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cubio/components/bluetooth_list/enums/supported_devices.dart';
 import 'package:cubio/page/constants.dart';
 import 'package:cubio/provider/bluetooth_providers.dart';
@@ -28,6 +30,7 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     await FlutterBluePlus.startScan(
+      androidUsesFineLocation: true,
       timeout: const Duration(seconds: bluetoothScanDur),
     );
   }
@@ -49,8 +52,8 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
         builder: (c, snapshot) {
           if (snapshot.data!) {
             return FloatingActionButton(
-              onPressed: () {
-                FlutterBluePlus.stopScan();
+              onPressed: () async {
+                await FlutterBluePlus.stopScan();
               },
               backgroundColor: Colors.red,
               child: const Icon(Icons.stop),
@@ -60,6 +63,7 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
               backgroundColor: Colors.blue,
               onPressed: () async {
                 await FlutterBluePlus.startScan(
+                  androidUsesFineLocation: true,
                   timeout: const Duration(seconds: bluetoothScanDur),
                 );
               },
@@ -90,13 +94,13 @@ class _DevicesListState extends ConsumerState<DevicesList> with UiLoggy {
               ),
               const SizedBox(height: 30),
               StreamBuilder<List<ScanResult>>(
-                stream: FlutterBluePlus.scanResults,
+                stream: FlutterBluePlus.onScanResults,
                 initialData: const [],
                 builder: (c, snapshot) {
                   var items = snapshot.data!
                       .where((element) =>
                           element.device.platformName.isNotEmpty &&
-                          element.device.platformName == SupportedDevices.Gi163347.name)
+                          SupportedDevices.values.map((e) => e.name).contains(element.device.platformName))
                       .toList();
 
                   return items.isEmpty

@@ -2,4 +2,5 @@
 
 enum SupportedDevices {
   Gi163347,
+  Gi126311,
 }
