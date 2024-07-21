@@ -32,84 +32,101 @@ class _SolverScreenState extends ConsumerState<SolverScreen> with UiLoggy {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Expanded(
-              flex: 2,
-              child: Center(
-                child: UnityWidget(
-                  runImmediately: true,
-                  onUnityCreated: (controller) {},
-                  onUnityMessage: (message) {
-                    loggy.debug(message);
-                    List<String> parsedSolution = message.split(" ");
-                    ref.read(solveSequenceProvider.notifier).state =
-                        parsedSolution
-                            .where((element) => element != "")
-                            .toList();
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Text(
-                          "SOLVE SEQUENCE",
-                          style:
-                              titleTextStyle.copyWith(color: appBarTitleColor),
-                        ),
-                        solution.isEmpty
-                            ? Text(
-                                !isSolved ? "---" : "CUBE SOLVED!",
-                                style: titleTextStyle.copyWith(fontSize: 48),
-                              )
-                            : CarouselSlider(
-                                options: CarouselOptions(
-                                  enableInfiniteScroll: false,
-                                  aspectRatio: 5 / 1,
-                                  viewportFraction: 0.4,
-                                ),
-                                items: solution
-                                    .asMap()
-                                    .map((int i, String move) {
-                                      return MapEntry(i, Builder(
-                                        builder: (BuildContext context) {
-                                          return Text(
-                                            "${i + 1}. $move",
-                                            style: titleTextStyle.copyWith(
-                                                fontSize: 48),
-                                          );
-                                        },
-                                      ));
-                                    })
-                                    .values
-                                    .toList(),
-                              ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Text(
-                          "LAST MOVE",
-                          style: regularTextStyle.copyWith(
-                              color: appBarTitleColor),
-                        ),
-                        Text(
-                          ref.read(cubeDataProvider.notifier).lastMove,
-                          style: titleTextStyle.copyWith(fontSize: 36),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildUnityWidget(),
+            _buildSolutionColumn(solution, isSolved),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildUnityWidget() {
+    return Expanded(
+      flex: 2,
+      child: Center(
+        child: UnityWidget(
+          runImmediately: true,
+          onUnityCreated: (controller) {},
+          onUnityMessage: _onUnityMessage,
+        ),
+      ),
+    );
+  }
+
+  void _onUnityMessage(dynamic message) {
+    loggy.debug(message);
+    List<String> parsedSolution = message.split(" ");
+    ref.read(solveSequenceProvider.notifier).state = parsedSolution
+        .where((element) => element != "").toList();
+  }
+
+  Widget _buildSolutionColumn(List<String> solution, bool isSolved) {
+    return Expanded(
+      child: Column(
+        children: [
+          _buildSolveSequence(solution, isSolved),
+          _buildLastMove(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSolveSequence(List<String> solution, bool isSolved) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            "SOLVE SEQUENCE",
+            style: titleTextStyle.copyWith(color: appBarTitleColor),
+          ),
+          if (solution.isEmpty)
+            Text(
+              !isSolved ? "---" : "CUBE SOLVED!",
+              style: titleTextStyle.copyWith(fontSize: 48),
+            )
+          else
+            _buildCarousel(solution),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCarousel(List<String> solution) {
+    return CarouselSlider(
+      options: CarouselOptions(
+        enableInfiniteScroll: false,
+        aspectRatio: 5 / 1,
+        viewportFraction: 0.4,
+      ),
+      items: solution.asMap().map((int i, String move) {
+        return MapEntry(
+          i,
+          Builder(
+            builder: (BuildContext context) {
+              return Text(
+                "${i + 1}. $move",
+                style: titleTextStyle.copyWith(fontSize: 48),
+              );
+            },
+          ),
+        );
+      }).values.toList(),
+    );
+  }
+
+  Widget _buildLastMove() {
+    return Flexible(
+      child: Column(
+        children: [
+          Text(
+            "LAST MOVE",
+            style: regularTextStyle.copyWith(color: appBarTitleColor),
+          ),
+          Text(
+            ref.read(cubeDataProvider.notifier).lastMove,
+            style: titleTextStyle.copyWith(fontSize: 36),
+          ),
+        ],
       ),
     );
   }
