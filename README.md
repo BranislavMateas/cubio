@@ -45,7 +45,7 @@ If the latter applies, ensure you have downloaded:
 For a detailed explanation of the project's design, development process, and technical details, refer to the following resources:
 
 - [Project Report (Slovak)](Maturitna_praca_Mateas.pdf)
-- [Medium Article](TO)
+- [Medium Article](https://medium.com/@mateas.branislav/flutter-smart-rubiks-cubes-all-you-need-to-know-0e3d1f384049)
 
 ## Contributing
 
