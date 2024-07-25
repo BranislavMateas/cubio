@@ -28,7 +28,6 @@ public class PivotRotation : MonoBehaviour
         }
     }
 
-    // Inicializuj rotáciu
     public void StartAutoRotate(List<GameObject> side, float angle)
     {
        cubeState.PickUp(side);
@@ -38,14 +37,12 @@ public class PivotRotation : MonoBehaviour
         autorotating = true;
     }
 
-    // Funkcia otáčania kocky samotnej
     private void AutoRotate()
     {
         if (CubeState.isInit)
         {
             transform.localRotation = targetQuaternion;
 
-            // Odpájanie kociek od rodiča
             cubeState.PutDown(activeSide, transform.parent);
 
             readCube.ReadState();
@@ -55,12 +52,10 @@ public class PivotRotation : MonoBehaviour
             var step = speed * Time.deltaTime * 2;
             transform.localRotation = Quaternion.RotateTowards(transform.localRotation, targetQuaternion, step);
 
-            // Keď skončí rotácia, vráť všetko do pôvodného, no updatovaného stavu
             if (Quaternion.Angle(transform.localRotation, targetQuaternion) <= 1)
             {
                 transform.localRotation = targetQuaternion;
 
-                // Malé kocky odpojíme od rodiča
                 cubeState.PutDown(activeSide, transform.parent);
 
                 readCube.ReadState();

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ReadCube : MonoBehaviour
 {
-    // Transformačné objekty
     public Transform tUp;
     public Transform tDown;
     public Transform tLeft;
@@ -12,7 +11,6 @@ public class ReadCube : MonoBehaviour
     public Transform tFront;
     public Transform tBack;
 
-    // Zoznamy obsahujúce lúče snímajúce farbu kocky
     private List<GameObject> frontRays = new List<GameObject>();
     private List<GameObject> backRays = new List<GameObject>();
     private List<GameObject> upRays = new List<GameObject>();
@@ -20,16 +18,12 @@ public class ReadCube : MonoBehaviour
     private List<GameObject> leftRays = new List<GameObject>();
     private List<GameObject> rightRays = new List<GameObject>();
 
-    // Layer Mask pre filtrovanie stien kocky
     private int layerMask = 1 << 8; // this layermask is for the faces of the cube only
 
-    // Premenná ukladajúci stav kocky
     CubeState cubeState;
 
-    // Premenná pre pomocné objekty
     public GameObject emptyGO;
 
-    // Start metóda sa volá vždy na začiatku - ako setup metóda v Arduine
     void Start()
     {
         SetRayTransforms();
@@ -40,7 +34,6 @@ public class ReadCube : MonoBehaviour
         CubeState.started = true;
     }
 
-    // Inicializácia Nastavovania lúčov smerom na jednotlivé strany kocky
     void SetRayTransforms()
     {
         upRays = BuildRays(tUp, new Vector3(90,90,0));
@@ -51,13 +44,8 @@ public class ReadCube : MonoBehaviour
         backRays = BuildRays(tBack, new Vector3(0,270,0));
     }
 
-    // Samotné nastavovanie lúčov - vytvorí 9 lúčov v nasledovnom poradí:
-    //      0|1|2
-    //      3|4|5
-    //      6|7|8
     List<GameObject> BuildRays(Transform rayTransform, Vector3 direction)
     {
-        // Využívaný na zistenie správneho poradia lúčov
         int rayCount = 0;
 
         List<GameObject> rays = new List<GameObject>();
@@ -94,7 +82,6 @@ public class ReadCube : MonoBehaviour
         cubeState.back = ReadFace(backRays, tBack);
     }
 
-     // Funkcia čítajúca farbu steny kocky
     public List<GameObject> ReadFace(List<GameObject> rayStarts, Transform rayTransform)
     {
         List<GameObject> facesHit = new List<GameObject>();
@@ -104,7 +91,6 @@ public class ReadCube : MonoBehaviour
             Vector3 ray = rayStart.transform.position;
             RaycastHit hit;
 
-            // Pretína lúč v maske nejaké objekty?
             if (Physics.Raycast(ray, rayTransform.forward, out hit, Mathf.Infinity, layerMask))
             {
                 Debug.DrawRay(ray, rayTransform.forward * hit.distance, Color.yellow);

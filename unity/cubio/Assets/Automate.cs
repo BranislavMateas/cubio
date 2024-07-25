@@ -25,7 +25,6 @@ public class Automate : MonoBehaviour
     private CubeState cubeState;
     private ReadCube readCube;
 
-    // Dĺžka trvania ťahu
     float countdownLength = CubeState.isInit ? 0.1f : 0.5f;
     float solveCountdown = 1f;
 
@@ -41,7 +40,6 @@ public class Automate : MonoBehaviour
         Solve();
     }
 
-    // LateUpdate sa vykonáva každý frame
     void Update()
     {
         secondsElapsed += Time.deltaTime;
@@ -54,14 +52,12 @@ public class Automate : MonoBehaviour
         }
     }
 
-    // LateUpdate sa vykonáva na konci framu
     void LateUpdate() {
         if (secondsWithoutMove >= solveCountdown && CubeState.doSolve) {
             Solve();
         }
     }
 
-    // Nastavenie pozície pri úvodnom vykreslení
     public void SetupPosition(string cubeStringState)
     {
         CubeState.isInit = true;
@@ -71,7 +67,6 @@ public class Automate : MonoBehaviour
         moveList = ReverseMoves(solutionList);
     }
 
-    // Funkcia konvertujúca dvojité ťahy na dva osobitné
     public List<string> OptimizeSolution(string solution)
     {
         List<string> optimizedMoves = new List<string>();
@@ -104,39 +99,32 @@ public class Automate : MonoBehaviour
         return optimizedMoves;
     }
 
-    // Funkcia riešiaca ako vyriešiť kocku, ktorú následne pošle flutteru
     private void Solve()
     {   
-        // Vymedzuje opätovné volanie ďalšej inštancie funkcie Solve
         CubeState.doSolve = false;
 
-        // Prečíta aktuálny stav kocky (pošle "lúče")
         readCube.ReadState();
 
-        // Prekonvertuje aktuálne farby na String reprezentujúci stav
         string moveString = cubeState.GetStateString();
 
-        // Vyhľadávanie riešenia za pomoci Kociemba algoritmu
         string info = "";
         string solution = Search.solution(moveString, out info);
 
-        // Pohyby oddelí medzerou
         string optimizedSolution = string.Join(" ", OptimizeSolution(solution));
         
-        // Posiela riešenie Flutteru
         Manager.SendMessageToFlutter(optimizedSolution);
 
-        // Reštart premennej sledujúcej čas od posledného pohybu
         secondsWithoutMove = 0f;
     }
 
-    // Funkcia obracajúca ťahy
     List<string> ReverseMoves(List<string> originalMoves)
     {
         List<string> result = new List<string>();
+
         foreach(string move in originalMoves)
         {
             int index = allMoves.IndexOf(move);
+
             if (index >= 0 && index <= 5 || index >= 6 && index <= 11)
             {
                 result.Add(allMoves[index + 12]);
@@ -151,23 +139,19 @@ public class Automate : MonoBehaviour
         return result;
     }
 
-    // Funkcia konvertujúcu zoznam ťahov na List
     public List<string> StringToList(string solution)
     {
         List<string> solutionList = new List<string>(solution.Split(new string[] { " " }, System.StringSplitOptions.RemoveEmptyEntries));
         return solutionList;
     }
 
-    // Funkcia dovoľujúca vykonávať ťahy podľa našeho vstupu
     public void MyMove(string move) {
         CubeState.isInit = false;
         moveList.Add(move);
     }
 
-    // Funkcia vykonávajúca ťahy
     void DoMove(string nextMove)
     {
-        // Načítaj stav kocky
         readCube.ReadState();
 
         if (CubeState.started)
@@ -293,7 +277,6 @@ public class Automate : MonoBehaviour
                 countdownLength = CubeState.isInit ? 0.1f : 0.5f;
             }
 
-            // Odstráň move z prvého indexu
             moveList.Remove(moveList[0]);
             CubeState.doSolve = true;
 
@@ -301,7 +284,6 @@ public class Automate : MonoBehaviour
         }
     }
 
-    // Funkcia inicializujúca rotáciu strany
     void RotateSide(List<GameObject> side, float angle)
     {
         PivotRotation pr = side[4].transform.parent.GetComponent<PivotRotation>();
