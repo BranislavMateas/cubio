@@ -67,10 +67,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Shoutout to Megalomobilezo for the inspiring video series: [Let's Make & Solve a Rubik's Cube in Unity](https://www.youtube.com/watch?v=JN9vx0veZ-c&list=PLuq_iMEtykn-ZOJyx2cY_k9WkixAhv11n).
 - Thanks to Juanan Claramunt for the insightful article on the Xiaomi Mi Smart Rubik's Cube: [Medium Article](https://medium.com/@juananclaramunt/xiaomi-mi-smart-rubik-cube-ff5a22549f90).
 
-## TODO
-
-- Add purely virtual regime
-
 ---
 
 Feel free to reach out for any questions or support!
